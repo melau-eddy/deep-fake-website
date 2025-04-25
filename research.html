@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deepfake Research | The Deepfake Crisis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --bg-darker: #0a0a0a;
+            --primary-accent: #00f0ff;
+            --secondary-accent: #0066ff;
+            --danger-accent: #ff3e3e;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background-color: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo span {
+            color: var(--text-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-accent);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Research Header */
+        .research-header {
+            padding: 10rem 5% 5rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, rgba(18, 18, 18, 1) 100%);
+        }
+
+        .research-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.1;
+        }
+
+        .research-header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Research Tabs */
+        .research-tabs {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid var(--glass-border);
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-accent);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-accent);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Background Section */
+        .background-section {
+            padding: 3rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-accent);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .content-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .content-text p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .content-visual {
+            background-color: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .gan-diagram {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .gan-diagram img {
+            width: 100%;
+            height: auto;
+        }
+
+        .gan-process {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .gan-step {
+            text-align: center;
+            width: 30%;
+        }
+
+        .gan-step-icon {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(0, 240, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 1rem;
+            color: var(--primary-accent);
+            font-size: 1.5rem;
+        }
+
+        .gan-step h4 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-accent);
+        }
+
+        .gan-step p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Current Evidence Section */
+        .evidence-section {
+            padding: 3rem 0;
+        }
+
+        .evidence-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .evidence-card {
+            background-color: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .evidence-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-accent);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .evidence-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-accent);
+            display: flex;
+            align-items: center;
+        }
+
+        .evidence-card h3 i {
+            margin-right: 0.5rem;
+        }
+
+        .evidence-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .evidence-card .date {
+            font-size: 0.8rem;
+            color: var(--primary-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .evidence-card .source {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Implications Section */
+        .implications-section {
+            padding: 3rem 0 5rem;
+        }
+
+        .implications-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .implication-card {
+            background-color: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .implication-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-accent);
+        }
+
+        .implication-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-accent);
+            display: flex;
+            align-items: center;
+        }
+
+        .implication-card h3 i {
+            margin-right: 0.5rem;
+        }
+
+        .implication-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .solution-list {
+            list-style-type: none;
+        }
+
+        .solution-list li {
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .solution-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--primary-accent);
+        }
+
+        /* Embedded Presentation */
+        .presentation-section {
+            padding: 3rem 0;
+            background-color: var(--bg-darker);
+            margin: 3rem 0;
+        }
+
+        .presentation-container {
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--bg-darker);
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-accent);
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-accent);
+        }
+
+        .copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            .implications-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 5%;
+            }
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .research-header {
+                padding: 8rem 5% 3rem;
+            }
+            .research-header h1 {
+                font-size: 2.5rem;
+            }
+            .tabs-header {
+                flex-wrap: wrap;
+            }
+            .tab-btn {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .implications-grid {
+                grid-template-columns: 1fr;
+            }
+            .gan-process {
+                flex-direction: column;
+            }
+            .gan-step {
+                width: 100%;
+                margin-bottom: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">DEEPFAKE<span>CRISIS</span></a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="research.html" class="active">Research</a>
+            <a href="examples.html">Examples</a>
+            <a href="solutions.html">Solutions</a>
+            <a href="about.html">About</a>
+        </div>
+        <button class="mobile-menu-btn">☰</button>
+    </nav>
+
+    <!-- Research Header -->
+    <section class="research-header">
+        <h1>Deepfake Technology Research</h1>
+        <p>Exploring the technical foundations, current threats, and societal implications of synthetic media in the digital age</p>
+    </section>
+
+    <!-- Research Tabs -->
+    <section class="research-tabs">
+        <div class="tabs-header">
+            <button class="tab-btn active" data-tab="background">Background</button>
+            <button class="tab-btn" data-tab="evidence">Current Evidence</button>
+            <button class="tab-btn" data-tab="implications">Implications</button>
+        </div>
+
+        <!-- Background Tab Content -->
+        <div class="tab-content active" id="background">
+            <div class="background-section">
+                <h2 class="section-title">Technical Foundations of Deepfakes</h2>
+                <div class="content-grid">
+                    <div class="content-text">
+                        <p>Deepfakes are powered by Generative Adversarial Networks (GANs), a machine learning framework where two neural networks compete against each other. The generator creates synthetic media while the discriminator evaluates its authenticity.</p>
+                        <p>This adversarial process continues until the generator produces content that the discriminator can no longer distinguish from real media, resulting in highly convincing synthetic outputs.</p>
+                        <p>The technology first gained public attention in 2017 when a Reddit user shared pornographic videos with celebrities' faces swapped. Since then, the tools have become more sophisticated and accessible.</p>
+                    </div>
+                    <div class="content-visual">
+                        <div class="gan-diagram">
+                            <img src="https://i.imgur.com/8YQ9Z9y.jpg" alt="GAN Architecture Diagram">
+                            <div class="gan-process">
+                                <div class="gan-step">
+                                    <div class="gan-step-icon">
+                                        <i class="fas fa-random"></i>
+                                    </div>
+                                    <h4>Generator</h4>
+                                    <p>Creates synthetic media samples</p>
+                                </div>
+                                <div class="gan-step">
+                                    <div class="gan-step-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <h4>Discriminator</h4>
+                                    <p>Evaluates authenticity</p>
+                                </div>
+                                <div class="gan-step">
+                                    <div class="gan-step-icon">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </div>
+                                    <h4>Feedback Loop</h4>
+                                    <p>Improves both networks</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-title">Evolution of Deepfake Technology</h2>
+                <div class="content-grid reverse">
+                    <div class="content-visual">
+                        <div style="width: 100%; height: 300px; background-color: var(--glass-bg); border-radius: 15px; display: flex; justify-content: center; align-items: center;">
+                            <p style="color: var(--text-secondary);">Timeline visualization of deepfake evolution</p>
+                        </div>
+                    </div>
+                    <div class="content-text">
+                        <p>2017: First public appearance on Reddit, primarily used for celebrity face swaps in pornography.</p>
+                        <p>2018: Open-source tools like DeepFaceLab make the technology accessible to non-experts.</p>
+                        <p>2019: First political deepfakes emerge, including a manipulated video of Nancy Pelosi.</p>
+                        <p>2020: Deepfake detection tools become commercially available as the technology spreads.</p>
+                        <p>2021: Text-to-video synthesis emerges, reducing the need for source footage.</p>
+                        <p>2022: Ukraine war sees first use of deepfakes in armed conflict (Zelenskyy surrender video).</p>
+                        <p>2023: AI voice cloning becomes widespread, enabling convincing audio deepfakes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Evidence Tab Content -->
+        <div class="tab-content" id="evidence">
+            <div class="evidence-section">
+                <h2 class="section-title">Documented Cases and Statistics</h2>
+                <p style="margin-bottom: 2rem; color: var(--text-secondary);">Recent examples demonstrating the real-world impact of deepfake technology across various sectors.</p>
+                
+                <div class="evidence-cards">
+                    <div class="evidence-card">
+                        <h3><i class="fas fa-landmark"></i> Political Manipulation</h3>
+                        <div class="date">March 2022</div>
+                        <p>A deepfake video of Ukrainian President Volodymyr Zelenskyy appeared on hacked news sites, falsely showing him telling troops to surrender to Russian forces.</p>
+                        <div class="source">Source: BBC Investigation</div>
+                    </div>
+                    <div class="evidence-card">
+                        <h3><i class="fas fa-female"></i> Non-Consensual Pornography</h3>
+                        <div class="date">2021 Study</div>
+                        <p>Research in AI & Society found that 96% of deepfake pornography targets women, with celebrities and private individuals both victimized without consent.</p>
+                        <div class="source">Source: Kang et al., AI & Society</div>
+                    </div>
+                    <div class="evidence-card">
+                        <h3><i class="fas fa-phone-alt"></i> Voice Cloning Scams</h3>
+                        <div class="date">2020 Case</div>
+                        <p>A UK energy firm lost £200,000 when criminals used AI to mimic a CEO's voice and authorize fraudulent transfers.</p>
+                        <div class="source">Source: Europol Report</div>
+                    </div>
+                    <div class="evidence-card">
+                        <h3><i class="fas fa-vote-yea"></i> Election Interference</h3>
+                        <div class="date">January 2024</div>
+                        <p>AI-generated robocalls impersonating President Biden targeted New Hampshire voters, falsely telling them not to vote in the primary.</p>
+                        <div class="source">Source: State Attorney General</div>
+                    </div>
+                    <div class="evidence-card">
+                        <h3><i class="fas fa-chart-line"></i> Growth Statistics</h3>
+                        <div class="date">2023 Report</div>
+                        <p>Europol reports a 900% increase in deepfake content since 2019, with detection tools only catching 45% of sophisticated fakes.</p>
+                        <div class="source">Source: Europol 2023</div>
+                    </div>
+                    <div class="evidence-card">
+                        <h3><i class="fas fa-robot"></i> Detection Challenges</h3>
+                        <div class="date">2021 Study</div>
+                        <p>Research shows current detection algorithms perform 10-15% worse on non-white faces, raising concerns about racial bias in moderation.</p>
+                        <div class="source">Source: Agarwal, UC Berkeley</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implications Tab Content -->
+        <div class="tab-content" id="implications">
+            <div class="implications-section">
+                <h2 class="section-title">Societal and Ethical Implications</h2>
+                <p style="margin-bottom: 2rem; color: var(--text-secondary);">The profound consequences of deepfake technology on democracy, privacy, and digital identity.</p>
+                
+                <div class="implications-grid">
+                    <div class="implication-card">
+                        <h3><i class="fas fa-democrat"></i> Democratic Erosion</h3>
+                        <p>The "liar's dividend" phenomenon allows real footage to be dismissed as fake, undermining accountability and shared reality.</p>
+                        <ul class="solution-list">
+                            <li>Require watermarking for synthetic content</li>
+                            <li>Develop real-time verification tools</li>
+                            <li>Regulate political ad transparency</li>
+                        </ul>
+                    </div>
+                    <div class="implication-card">
+                        <h3><i class="fas fa-user-shield"></i> Consent Crisis</h3>
+                        <p>Digital identity becomes separable from human agency as people's likenesses are used without permission.</p>
+                        <ul class="solution-list">
+                            <li>Strengthen likeness rights legislation</li>
+                            <li>Create opt-out registries for biometric data</li>
+                            <li>Platform takedown requirements</li>
+                        </ul>
+                    </div>
+                    <div class="implication-card">
+                        <h3><i class="fas fa-brain"></i> Epistemic Collapse</h3>
+                        <p>Philosopher Regina Rini warns deepfakes challenge democratic epistemology - the shared understanding of truth.</p>
+                        <ul class="solution-list">
+                            <li>Media literacy education programs</li>
+                            <li>Journalistic verification standards</li>
+                            <li>Source provenance technology</li>
+                        </ul>
+                    </div>
+                    <div class="implication-card">
+                        <h3><i class="fas fa-balance-scale"></i> Legal Challenges</h3>
+                        <p>Existing laws struggle to address synthetic media, creating jurisdictional gaps in prosecution.</p>
+                        <ul class="solution-list">
+                            <li>Update harassment and defamation laws</li>
+                            <li>International cooperation frameworks</li>
+                            <li>Specialized digital evidence courts</li>
+                        </ul>
+                    </div>
+                    <div class="implication-card">
+                        <h3><i class="fas fa-code-branch"></i> AI Arms Race</h3>
+                        <p>Detection tools and synthetic generators evolve in competition, requiring constant innovation.</p>
+                        <ul class="solution-list">
+                            <li>Fund open detection research</li>
+                            <li>Ethical AI development standards</li>
+                            <li>Responsible disclosure protocols</li>
+                        </ul>
+                    </div>
+                    <div class="implication-card">
+                        <h3><i class="fas fa-globe"></i> Global Disinformation</h3>
+                        <p>State actors weaponize deepfakes to destabilize geopolitical rivals and manipulate populations.</p>
+                        <ul class="solution-list">
+                            <li>International deepfake monitoring</li>
+                            <li>Diplomatic consequences for state use</li>
+                            <li>Resilience training for journalists</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Embedded Presentation Section -->
+        <section class="presentation-section">
+            <div class="section-header" style="text-align: center; margin-bottom: 2rem;">
+                <h2 class="section-title">Research Presentation</h2>
+                <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;">Watch our narrated presentation for a comprehensive overview of deepfake technology and its impacts</p>
+            </div>
+            <div class="presentation-container">
+                <div style="padding:56.25% 0 0 0;position:relative;">
+                    <div style="position:absolute;top:0;left:0;width:100%;height:100%;background-color: var(--glass-bg); display: flex; justify-content: center; align-items: center;">
+                        <p style="color: var(--text-secondary);">Embedded narrated presentation would appear here</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <a href="index.html" class="footer-logo">DEEPFAKECRISIS</a>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="research.html">Research</a>
+                <a href="examples.html">Examples</a>
+                <a href="solutions.html">Solutions</a>
+                <a href="about.html">About</a>
+            </div>
+            <p class="copyright">© 2023 Deepfake Crisis Project. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Tab functionality
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons and contents
+                tabBtns.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                btn.classList.add('active');
+                const tabId = btn.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Animate elements when they come into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.evidence-card, .implication-card, .content-grid').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

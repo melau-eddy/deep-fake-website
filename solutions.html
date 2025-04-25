@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deepfake Solutions | The Deepfake Crisis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --bg-darker: #0a0a0a;
+            --primary-accent: #00f0ff;
+            --secondary-accent: #0066ff;
+            --success-accent: #00ff88;
+            --danger-accent: #ff3e3e;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background-color: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo span {
+            color: var(--text-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-accent);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Solutions Header */
+        .solutions-header {
+            padding: 10rem 5% 5rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, rgba(18, 18, 18, 1) 100%);
+        }
+
+        .solutions-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.1;
+        }
+
+        .solutions-header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Approach Tabs */
+        .approach-tabs {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid var(--glass-border);
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tabs-header::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-accent);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-accent);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Policy Section */
+        .policy-section {
+            padding: 3rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-accent);
+        }
+
+        .legislation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .legislation-card {
+            background-color: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .legislation-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-accent);
+        }
+
+        .legislation-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-accent);
+            display: flex;
+            align-items: center;
+        }
+
+        .legislation-card h3 i {
+            margin-right: 0.5rem;
+        }
+
+        .legislation-card .status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .status.active {
+            background-color: rgba(0, 255, 136, 0.1);
+            color: var(--success-accent);
+        }
+
+        .status.pending {
+            background-color: rgba(255, 255, 0, 0.1);
+            color: yellow;
+        }
+
+        .status.proposed {
+            background-color: rgba(0, 240, 255, 0.1);
+            color: var(--primary-accent);
+        }
+
+        .legislation-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .legislation-link {
+            color: var(--primary-accent);
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .legislation-link i {
+            margin-left: 0.3rem;
+            transition: transform 0.3s ease;
+        }
+
+        .legislation-link:hover i {
+            transform: translateX(3px);
+        }
+
+        /* Technology Section */
+        .technology-section {
+            padding: 3rem 0;
+            background-color: var(--bg-darker);
+            margin: 3rem 0;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        .tech-card {
+            background-color: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .tech-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-accent);
+        }
+
+        .tech-icon {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(0, 240, 255, 0.1);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary-accent);
+            font-size: 1.5rem;
+        }
+
+        .tech-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-accent);
+        }
+
+        .tech-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .tech-link {
+            color: var(--primary-accent);
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .tech-link i {
+            margin-left: 0.3rem;
+            transition: transform 0.3s ease;
+        }
+
+        .tech-link:hover i {
+            transform: translateX(3px);
+        }
+
+        /* Education Section */
+        .education-section {
+            padding: 3rem 0;
+        }
+
+        .education-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        .education-video {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+        }
+
+        .education-video iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .education-text h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-accent);
+        }
+
+        .education-text p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .education-list {
+            list-style-type: none;
+            margin-bottom: 2rem;
+        }
+
+        .education-list li {
+            margin-bottom: 1rem;
+            position: relative;
+            padding-left: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .education-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success-accent);
+            font-weight: bold;
+        }
+
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-accent);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 240, 255, 0.3);
+        }
+
+        /* Action Section */
+        .action-section {
+            padding: 5rem 5%;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.05) 0%, rgba(18, 18, 18, 1) 100%);
+            text-align: center;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 3rem auto 0;
+        }
+
+        .action-card {
+            background-color: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-accent);
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(0, 240, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 1.5rem;
+            color: var(--primary-accent);
+            font-size: 1.5rem;
+        }
+
+        .action-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-accent);
+        }
+
+        .action-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .action-link {
+            color: var(--primary-accent);
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-link i {
+            margin-left: 0.3rem;
+            transition: transform 0.3s ease;
+        }
+
+        .action-link:hover i {
+            transform: translateX(3px);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--bg-darker);
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-accent);
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-accent);
+        }
+
+        .copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .education-content {
+                grid-template-columns: 1fr;
+            }
+            .education-video {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 5%;
+            }
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .solutions-header {
+                padding: 8rem 5% 3rem;
+            }
+            .solutions-header h1 {
+                font-size: 2.5rem;
+            }
+            .tab-btn {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">DEEPFAKE<span>CRISIS</span></a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="research.html">Research</a>
+            <a href="examples.html">Examples</a>
+            <a href="solutions.html" class="active">Solutions</a>
+            <a href="about.html">About</a>
+        </div>
+        <button class="mobile-menu-btn">☰</button>
+    </nav>
+
+    <!-- Solutions Header -->
+    <section class="solutions-header">
+        <h1>Combating the Deepfake Threat</h1>
+        <p>Multi-faceted solutions to protect digital identity, restore trust, and mitigate harm from synthetic media</p>
+    </section>
+
+    <!-- Approach Tabs -->
+    <section class="approach-tabs">
+        <div class="tabs-header">
+            <button class="tab-btn active" data-tab="policy">Policy & Regulation</button>
+            <button class="tab-btn" data-tab="technology">Detection Technology</button>
+            <button class="tab-btn" data-tab="education">Education & Awareness</button>
+        </div>
+
+        <!-- Policy Tab Content -->
+        <div class="tab-content active" id="policy">
+            <div class="policy-section">
+                <h2 class="section-title">Legislative Responses</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">Governments worldwide are developing legal frameworks to address deepfake harms while balancing innovation and free expression.</p>
+                
+                <div class="legislation-grid">
+                    <!-- DEEPFAKES Accountability Act -->
+                    <div class="legislation-card">
+                        <h3><i class="fas fa-file-signature"></i> DEEPFAKES Accountability Act</h3>
+                        <span class="status proposed">Proposed</span>
+                        <p>U.S. legislation that would criminalize malicious deepfakes and require watermarking of synthetic content.</p>
+                        <a href="#" class="legislation-link">Read the bill <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <!-- EU AI Act -->
+                    <div class="legislation-card">
+                        <h3><i class="fas fa-flag-europe"></i> EU AI Act</h3>
+                        <span class="status active">Active</span>
+                        <p>Designates deepfakes as high-risk AI applications, requiring transparency and risk mitigation measures.</p>
+                        <a href="#" class="legislation-link">View regulations <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <!-- California Law -->
+                    <div class="legislation-card">
+                        <h3><i class="fas fa-gavel"></i> CA SB-602</h3>
+                        <span class="status active">Active</span>
+                        <p>California law allowing victims of non-consensual deepfake pornography to sue creators and distributors.</p>
+                        <a href="#" class="legislation-link">Learn more <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <!-- South Korea -->
+                    <div class="legislation-card">
+                        <h3><i class="fas fa-flag"></i> South Korea</h3>
+                        <span class="status active">Active</span>
+                        <p>Mandates disclosure of synthetic media in political campaigns with prison terms for violations.</p>
+                        <a href="#" class="legislation-link">Read analysis <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <!-- UK Online Safety Bill -->
+                    <div class="legislation-card">
+                        <h3><i class="fas fa-shield-alt"></i> UK Online Safety Bill</h3>
+                        <span class="status pending">Pending</span>
+                        <p>Would require platforms to remove illegal deepfake content and protect users from harmful synthetic media.</p>
+                        <a href="#" class="legislation-link">Track progress <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <!-- Global Partnership -->
+                    <div class="legislation-card">
+                        <h3><i class="fas fa-globe"></i> Global Partnership</h3>
+                        <span class="status proposed">Proposed</span>
+                        <p>International coalition to establish norms for state behavior regarding deepfake technology.</p>
+                        <a href="#" class="legislation-link">View proposal <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technology Tab Content -->
+        <div class="tab-content" id="technology">
+            <div class="technology-section">
+                <h2 class="section-title" style="text-align: center; margin-bottom: 2rem;">Detection & Authentication Tools</h2>
+                <p style="text-align: center; color: var(--text-secondary); max-width: 800px; margin: 0 auto 3rem;">Technological solutions to identify synthetic media and verify authentic content.</p>
+                
+                <div class="tech-grid">
+                    <!-- Microsoft Video Authenticator -->
+                    <div class="tech-card">
+                        <div class="tech-icon">
+                            <i class="fab fa-microsoft"></i>
+                        </div>
+                        <h3>Microsoft Video Authenticator</h3>
+                        <p>Analyzes videos and images to provide a confidence score about whether media has been artificially manipulated.</p>
+                        <a href="#" class="tech-link">Explore tool <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <!-- Project Origin -->
+                    <div class="tech-card">
+                        <div class="tech-icon">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <h3>Project Origin</h3>
+                        <p>BBC-led initiative that uses cryptographic signatures to verify the provenance of media content.</p>
+                        <a href="#" class="tech-link">Learn more <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <!-- Amber Authenticate -->
+                    <div class="tech-card">
+                        <div class="tech-icon">
+                            <i class="fas fa-fingerprint"></i>
+                        </div>
+                        <h3>Amber Authenticate</h3>
+                        <p>Embeds tamper-proof metadata into video files at the point of capture to establish authenticity.</p>
+                        <a href="#" class="tech-link">View details <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <!-- Deepfake Detection Challenge -->
+                    <div class="tech-card">
+                        <div class="tech-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h3>Deepfake Detection Challenge</h3>
+                        <p>Meta-led competition that produced open-source models for identifying synthetic media with 82% accuracy.</p>
+                        <a href="#" class="tech-link">See results <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <!-- Reality Defender -->
+                    <div class="tech-card">
+                        <div class="tech-icon">
+                            <i class="fas fa-shield-virus"></i>
+                        </div>
+                        <h3>Reality Defender</h3>
+                        <p>Browser extension that scans for potential deepfakes in real-time across social platforms.</p>
+                        <a href="#" class="tech-link">Get extension <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <!-- Truepic -->
+                    <div class="tech-card">
+                        <div class="tech-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h3>Truepic</h3>
+                        <p>Mobile app that captures cryptographically sealed photos with verified metadata to prevent manipulation.</p>
+                        <a href="#" class="tech-link">Download app <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Education Tab Content -->
+        <div class="tab-content" id="education">
+            <div class="education-section">
+                <div class="education-content">
+                    <div class="education-video">
+                        <iframe src="https://www.youtube.com/embed/cQ54GDm1eL0?controls=1&modestbranding=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="education-text">
+                        <h2>Media Literacy & Public Awareness</h2>
+                        <p>Education remains our most powerful defense against deepfake deception. By training users to critically evaluate media, we can reduce susceptibility to synthetic disinformation.</p>
+                        
+                        <ul class="education-list">
+                            <li>Recognize subtle facial distortions and unnatural blinking</li>
+                            <li>Check for inconsistent lighting and shadows</li>
+                            <li>Verify audio sync with mouth movements</li>
+                            <li>Look for digital artifacts around edges</li>
+                            <li>Cross-reference with trusted sources</li>
+                        </ul>
+
+                        <a href="#" class="btn btn-primary">Download Educational Materials</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Section -->
+        <div class="action-section">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary-accent);">Take Action Against Deepfakes</h2>
+            <p style="color: var(--text-secondary); max-width: 700px; margin: 0 auto;">Individuals, organizations, and policymakers all have roles to play in addressing the deepfake challenge.</p>
+            
+            <div class="action-grid">
+                <div class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3>Protect Yourself</h3>
+                    <p>Use privacy settings, be cautious with biometric data, and enable two-factor authentication.</p>
+                    <a href="#" class="action-link">Safety guide <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-flag"></i>
+                    </div>
+                    <h3>Report Deepfakes</h3>
+                    <p>Platforms have reporting mechanisms for non-consensual or harmful synthetic media.</p>
+                    <a href="#" class="action-link">Reporting links <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h3>Support Organizations</h3>
+                    <p>Groups like the Algorithmic Justice League are working on ethical AI solutions.</p>
+                    <a href="#" class="action-link">Get involved <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <div class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <h3>Contact Representatives</h3>
+                    <p>Advocate for legislation that addresses deepfake harms while protecting innovation.</p>
+                    <a href="#" class="action-link">Find officials <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <a href="index.html" class="footer-logo">DEEPFAKECRISIS</a>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="research.html">Research</a>
+                <a href="examples.html">Examples</a>
+                <a href="solutions.html">Solutions</a>
+                <a href="about.html">About</a>
+            </div>
+            <p class="copyright">© 2023 Deepfake Crisis Project. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Tab functionality
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons and contents
+                tabBtns.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                btn.classList.add('active');
+                const tabId = btn.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Animate cards when they come into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.legislation-card, .tech-card, .action-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

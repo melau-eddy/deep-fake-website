@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deepfake Examples | The Deepfake Crisis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --bg-darker: #0a0a0a;
+            --primary-accent: #00f0ff;
+            --secondary-accent: #0066ff;
+            --danger-accent: #ff3e3e;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background-color: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo span {
+            color: var(--text-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-accent);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Examples Header */
+        .examples-header {
+            padding: 10rem 5% 5rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, rgba(18, 18, 18, 1) 100%);
+        }
+
+        .examples-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.1;
+        }
+
+        .examples-header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid var(--glass-border);
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .tabs-header::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-accent);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-accent);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Example Grid */
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .example-card {
+            background-color: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .example-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary-accent);
+        }
+
+        .media-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            overflow: hidden;
+        }
+
+        .media-container img,
+        .media-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .example-info {
+            padding: 1.5rem;
+        }
+
+        .example-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-accent);
+        }
+
+        .example-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .example-info p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .example-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            background-color: rgba(0, 240, 255, 0.1);
+            color: var(--primary-accent);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* Audio Examples Section */
+        .audio-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: var(--glass-bg);
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .audio-section h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-accent);
+        }
+
+        .audio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .audio-card {
+            background-color: var(--bg-darker);
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+        .audio-card h3 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .audio-card h3 i {
+            margin-right: 0.5rem;
+            color: var(--primary-accent);
+        }
+
+        .audio-player {
+            width: 100%;
+            margin-top: 1rem;
+            background-color: var(--glass-bg);
+            border-radius: 10px;
+            padding: 0.5rem;
+        }
+
+        /* Comparison Section */
+        .comparison-section {
+            margin: 5rem 0;
+            text-align: center;
+        }
+
+        .comparison-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-accent);
+        }
+
+        .comparison-container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .comparison-slider {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        }
+
+        .comparison-image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .comparison-handle {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-accent);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+        }
+
+        .comparison-line {
+            position: absolute;
+            height: 100%;
+            width: 4px;
+            background-color: var(--primary-accent);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+        }
+
+        .comparison-instructions {
+            margin-top: 1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--bg-darker);
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-accent);
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-accent);
+        }
+
+        .copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .example-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 5%;
+            }
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .examples-header {
+                padding: 8rem 5% 3rem;
+            }
+            .examples-header h1 {
+                font-size: 2.5rem;
+            }
+            .tab-btn {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .example-grid {
+                grid-template-columns: 1fr;
+            }
+            .audio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">DEEPFAKE<span>CRISIS</span></a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="research.html">Research</a>
+            <a href="examples.html" class="active">Examples</a>
+            <a href="solutions.html">Solutions</a>
+            <a href="about.html">About</a>
+        </div>
+        <button class="mobile-menu-btn">☰</button>
+    </nav>
+
+    <!-- Examples Header -->
+    <section class="examples-header">
+        <h1>Deepfake Examples</h1>
+        <p>Documented cases of synthetic media across politics, entertainment, and criminal activity</p>
+    </section>
+
+    <!-- Category Tabs -->
+    <section class="category-tabs">
+        <div class="tabs-header">
+            <button class="tab-btn active" data-tab="political">Political</button>
+            <button class="tab-btn" data-tab="entertainment">Entertainment</button>
+            <button class="tab-btn" data-tab="criminal">Criminal</button>
+            <button class="tab-btn" data-tab="social">Social Media</button>
+        </div>
+
+        <!-- Political Tab Content -->
+        <div class="tab-content active" id="political">
+            <div class="example-grid">
+                <!-- Zelenskyy Example -->
+                <div class="example-card">
+                    <div class="media-container">
+                        <iframe src="https://www.youtube.com/embed/7QmJqkK1DWY?controls=1&modestbranding=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="example-info">
+                        <h3>Zelenskyy Surrender Video</h3>
+                        <div class="example-meta">
+                            <span>March 2022</span>
+                            <span>Ukraine Conflict</span>
+                        </div>
+                        <p>A deepfake video of Ukrainian President Volodymyr Zelenskyy was circulated on hacked news sites, appearing to show him telling troops to surrender to Russian forces.</p>
+                        <div class="example-tags">
+                            <span class="tag">War Propaganda</span>
+                            <span class="tag">International</span>
+                            <span class="tag">Video</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Biden Robocall Example -->
+                <div class="example-card">
+                    <div class="media-container">
+                        <iframe src="https://www.youtube.com/embed/3pW-s46D5qk?controls=1&modestbranding=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="example-info">
+                        <h3>Biden Robocall</h3>
+                        <div class="example-meta">
+                            <span>January 2024</span>
+                            <span>U.S. Election</span>
+                        </div>
+                        <p>AI-generated robocalls impersonating President Biden targeted New Hampshire voters before the primary, falsely telling them not to vote.</p>
+                        <div class="example-tags">
+                            <span class="tag">Election</span>
+                            <span class="tag">Audio</span>
+                            <span class="tag">Domestic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pelosi Video Example -->
+                <div class="example-card">
+                    <div class="media-container">
+                        <iframe src="https://www.youtube.com/embed/uy9eDnLqj4o?controls=1&modestbranding=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="example-info">
+                        <h3>Pelosi Slurred Speech</h3>
+                        <div class="example-meta">
+                            <span>May 2019</span>
+                            <span>U.S. Politics</span>
+                        </div>
+                        <p>A manipulated video of Nancy Pelosi that made her appear to slur her words was shared by political figures and viewed millions of times.</p>
+                        <div class="example-tags">
+                            <span class="tag">Manipulation</span>
+                            <span class="tag">Video</span>
+                            <span class="tag">Partisan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Entertainment Tab Content -->
+        <div class="tab-content" id="entertainment">
+            <div class="example-grid">
+                <!-- Tom Cruise TikTok -->
+                <div class="example-card">
+                    <div class="media-container">
+                        <iframe src="https://www.youtube.com/embed/6xKGVN5RMLY?controls=1&modestbranding=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="example-info">
+                        <h3>Tom Cruise TikTok</h3>
+                        <div class="example-meta">
+                            <span>2021</span>
+                            <span>Social Media</span>
+                        </div>
+                        <p>A series of viral TikTok videos featuring a deepfake Tom Cruise demonstrating the entertainment potential of the technology.</p>
+                        <div class="example-tags">
+                            <span class="tag">Celebrity</span>
+                            <span class="tag">Ethical Use</span>
+                            <span class="tag">Video</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Star Wars Example -->
+                <div class="example-card">
+                    <div class="media-container">
+                        <iframe src="https://www.youtube.com/embed/9CO6M2HsoIA?controls=1&modestbranding=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="example-info">
+                        <h3>Young Mark Hamill</h3>
+                        <div class="example-meta">
+                            <span>2020</span>
+                            <span>Film Industry</span>
+                        </div>
+                        <p>Deepfake technology was used to recreate a young Luke Skywalker in The Mandalorian, showing potential applications in film.</p>
+                        <div class="example-tags">
+                            <span class="tag">Film</span>
+                            <span class="tag">Consensual</span>
+                            <span class="tag">VFX</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Obama PSA -->
+                <div class="example-card">
+                    <div class="media-container">
+                        <iframe src="https://www.youtube.com/embed/cQ54GDm1eL0?controls=1&modestbranding=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="example-info">
+                        <h3>Obama Deepfake PSA</h3>
+                        <div class="example-meta">
+                            <span>2018</span>
+                            <span>Public Service</span>
+                        </div>
+                        <p>Jordan Peele and BuzzFeed created a deepfake Obama to demonstrate the dangers of synthetic media in this public service announcement.</p>
+                        <div class="example-tags">
+                            <span class="tag">Education</span>
+                            <span class="tag">Awareness</span>
+                            <span class="tag">Satire</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Criminal Tab Content -->
+        <div class="tab-content" id="criminal">
+            <div class="example-grid">
+                <!-- CEO Fraud Example -->
+                <div class="example-card">
+                    <div class="media-container">
+                        <img src="https://i.imgur.com/JKv7W1A.jpg" alt="CEO Fraud Illustration">
+                    </div>
+                    <div class="example-info">
+                        <h3>CEO Voice Fraud</h3>
+                        <div class="example-meta">
+                            <span>2020</span>
+                            <span>United Kingdom</span>
+                        </div>
+                        <p>An energy company executive transferred €220,000 after receiving a phone call that used AI to mimic his CEO's voice.</p>
+                        <div class="example-tags">
+                            <span class="tag">Financial</span>
+                            <span class="tag">Audio</span>
+                            <span class="tag">Business</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Non-Consensual Porn -->
+                <div class="example-card">
+                    <div class="media-container">
+                        <img src="https://i.imgur.com/5XwW3bB.jpg" alt="Deepfake Pornography Illustration" style="object-fit: contain; background-color: #000;">
+                    </div>
+                    <div class="example-info">
+                        <h3>Celebrity Deepfake Porn</h3>
+                        <div class="example-meta">
+                            <span>Ongoing</span>
+                            <span>Global</span>
+                        </div>
+                        <p>Thousands of non-consensual deepfake pornographic videos target female celebrities and private individuals.</p>
+                        <div class="example-tags">
+                            <span class="tag">Harassment</span>
+                            <span class="tag">Gender</span>
+                            <span class="tag">Ethics</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Romance Scams -->
+                <div class="example-card">
+                    <div class="media-container">
+                        <img src="https://i.imgur.com/8YQ9Z9y.jpg" alt="Romance Scam Illustration">
+                    </div>
+                    <div class="example-info">
+                        <h3>Romance Scams</h3>
+                        <div class="example-meta">
+                            <span>2023 Report</span>
+                            <span>FTC Warning</span>
+                        </div>
+                        <p>The FTC has warned about romance scams using deepfake video calls to convince victims of a real relationship before requesting money.</p>
+                        <div class="example-tags">
+                            <span class="tag">Emotional</span>
+                            <span class="tag">Financial</span>
+                            <span class="tag">Video</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Media Tab Content -->
+        <div class="tab-content" id="social">
+            <div class="example-grid">
+                <!-- TikTok Trends -->
+                <div class="example-card">
+                    <div class="media-container">
+                        <iframe src="https://www.youtube.com/embed/R9MKMQbzMKk?controls=1&modestbranding=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="example-info">
+                        <h3>TikTok Face Swaps</h3>
+                        <div class="example-meta">
+                            <span>2022-2023</span>
+                            <span>Viral Trends</span>
+                        </div>
+                        <p>Face-swap filters and lightweight deepfake tools have become popular on TikTok, raising concerns about normalization of the technology.</p>
+                        <div class="example-tags">
+                            <span class="tag">Trend</span>
+                            <span class="tag">Youth</span>
+                            <span class="tag">Filters</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Influencer Scams -->
+                <div class="example-card">
+                    <div class="media-container">
+                        <img src="https://i.imgur.com/2LQvU9G.jpg" alt="Influencer Scam Illustration">
+                    </div>
+                    <div class="example-info">
+                        <h3>Fake Influencers</h3>
+                        <div class="example-meta">
+                            <span>2023 Investigation</span>
+                            <span>Instagram</span>
+                        </div>
+                        <p>AI-generated influencers with synthetic faces and biographies have amassed large followings and endorsement deals.</p>
+                        <div class="example-tags">
+                            <span class="tag">Marketing</span>
+                            <span class="tag">Identity</span>
+                            <span class="tag">Commerce</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meme Culture -->
+                <div class="example-card">
+                    <div class="media-container">
+                        <iframe src="https://www.youtube.com/embed/vn2q7I7XQlQ?controls=1&modestbranding=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="example-info">
+                        <h3>Meme Culture</h3>
+                        <div class="example-meta">
+                            <span>Ongoing</span>
+                            <span>Internet Culture</span>
+                        </div>
+                        <p>Deepfakes have been widely used in meme culture, from Nicolas Cage in every movie to historical figures rapping.</p>
+                        <div class="example-tags">
+                            <span class="tag">Humor</span>
+                            <span class="tag">Satire</span>
+                            <span class="tag">Cultural</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audio Examples Section -->
+        <div class="audio-section">
+            <h2><i class="fas fa-microphone-alt"></i> Audio Deepfake Examples</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Voice cloning technology has become particularly convincing. Listen to these examples:</p>
+            
+            <div class="audio-grid">
+                <div class="audio-card">
+                    <h3><i class="fas fa-user-tie"></i> CEO Fraud Call</h3>
+                    <p>Example of how executives' voices can be cloned for financial fraud.</p>
+                    <audio controls class="audio-player">
+                        <source src="https://example.com/ceo-fraud.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <div class="audio-card">
+                    <h3><i class="fas fa-poll"></i> Political Robocall</h3>
+                    <p>AI-generated voice mimicking a politician's speech.</p>
+                    <audio controls class="audio-player">
+                        <source src="https://example.com/political-robocall.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <div class="audio-card">
+                    <h3><i class="fas fa-music"></i> Celebrity Voice Clone</h3>
+                    <p>Famous singer's voice synthesized to perform new songs.</p>
+                    <audio controls class="audio-player">
+                        <source src="https://example.com/celebrity-voice.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Section -->
+        <div class="comparison-section">
+            <h2>Real vs. Deepfake: Can You Tell the Difference?</h2>
+            <div class="comparison-container">
+                <div class="comparison-slider">
+                    <div class="comparison-line"></div>
+                    <img src="https://i.imgur.com/JKv7W1A.jpg" alt="Real Image" class="comparison-image real-image">
+                    <img src="https://i.imgur.com/5XwW3bB.jpg" alt="Fake Image" class="comparison-image fake-image">
+                    <div class="comparison-handle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <p class="comparison-instructions">Drag the slider to compare the real image with its deepfake counterpart. Look for inconsistencies in lighting, facial features, and artifacts.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <a href="index.html" class="footer-logo">DEEPFAKECRISIS</a>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="research.html">Research</a>
+                <a href="examples.html">Examples</a>
+                <a href="solutions.html">Solutions</a>
+                <a href="about.html">About</a>
+            </div>
+            <p class="copyright">© 2023 Deepfake Crisis Project. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Tab functionality
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons and contents
+                tabBtns.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                btn.classList.add('active');
+                const tabId = btn.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Comparison slider functionality
+        const comparisonHandle = document.querySelector('.comparison-handle');
+        const comparisonContainer = document.querySelector('.comparison-slider');
+        const realImage = document.querySelector('.real-image');
+        let isDragging = false;
+
+        function updateSliderPosition(clientX) {
+            const containerRect = comparisonContainer.getBoundingClientRect();
+            let position = (clientX - containerRect.left) / containerRect.width;
+            
+            // Constrain position between 0 and 1
+            position = Math.max(0, Math.min(1, position));
+            
+            // Update slider handle position
+            comparisonHandle.style.left = `${position * 100}%`;
+            
+            // Clip the real image to show the fake image underneath
+            realImage.style.clipPath = `polygon(0 0, ${position * 100}% 0, ${position * 100}% 100%, 0 100%)`;
+        }
+
+        comparisonHandle.addEventListener('mousedown', () => {
+            isDragging = true;
+            comparisonHandle.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                updateSliderPosition(e.clientX);
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            comparisonHandle.style.cursor = 'grab';
+        });
+
+        // Touch support for slider
+        comparisonHandle.addEventListener('touchstart', () => {
+            isDragging = true;
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                updateSliderPosition(e.touches[0].clientX);
+            }
+        });
+
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        // Animate cards when they come into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.example-card, .audio-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

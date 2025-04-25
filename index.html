@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Deepfake Crisis | Digital Identity Threat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --bg-darker: #0a0a0a;
+            --primary-accent: #00f0ff;
+            --secondary-accent: #0066ff;
+            --danger-accent: #ff3e3e;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background-color: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo span {
+            color: var(--text-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-accent);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            width: 50%;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+            max-width: 80%;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-accent);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .btn-secondary {
+            border: 2px solid var(--primary-accent);
+            color: var(--primary-accent);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--primary-accent);
+            color: var(--bg-dark);
+        }
+
+        .hero-visual {
+            position: absolute;
+            right: 5%;
+            width: 40%;
+            height: 80%;
+            background-color: var(--glass-bg);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .face-morph-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .morph-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .morph-face.active {
+            opacity: 1;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 5rem 5%;
+            background-color: var(--bg-darker);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            background-color: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-accent);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Deepfake Challenge Section */
+        .challenge-section {
+            padding: 5rem 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .challenge-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .challenge-container {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 3rem;
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .challenge-slider {
+            position: relative;
+            width: 100%;
+            height: 450px;
+        }
+
+        .slider-image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slider-handle {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-accent);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+        }
+
+        .slider-line {
+            position: absolute;
+            height: 100%;
+            width: 4px;
+            background-color: var(--primary-accent);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+        }
+
+        .challenge-instructions {
+            margin-top: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .challenge-result {
+            margin-top: 1rem;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--primary-accent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .challenge-result.show {
+            opacity: 1;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--bg-darker);
+            padding: 3rem 5%;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-accent);
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-accent);
+        }
+
+        .copyright {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-content {
+                width: 60%;
+            }
+            .hero-visual {
+                width: 50%;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 5%;
+            }
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .hero {
+                flex-direction: column;
+                padding-top: 100px;
+                height: auto;
+                text-align: center;
+            }
+            .hero-content {
+                width: 100%;
+                margin-bottom: 3rem;
+            }
+            .hero p {
+                max-width: 100%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-visual {
+                position: relative;
+                right: auto;
+                width: 100%;
+                height: 400px;
+                margin-top: 2rem;
+            }
+            .cta-buttons {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .challenge-slider {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="#" class="logo">DEEPFAKE<span>CRISIS</span></a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="research.html">Research</a>
+            <a href="examples.html">Examples</a>
+            <a href="solutions.html">Solutions</a>
+            <a href="about.html">About</a>
+        </div>
+        <button class="mobile-menu-btn">☰</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>The Digital Identity Crisis in the Age of Deepfakes</h1>
+            <p>Hyper-realistic synthetic media threatens privacy, consent, and democracy. Explore how AI-generated content is reshaping truth and what we can do about it.</p>
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-primary">Learn the Risks</a>
+                <a href="#" class="btn btn-secondary">Spot a Deepfake</a>
+            </div>
+        </div>
+        <div class="hero-visual floating">
+            <div class="face-morph-container">
+                <img src="https://i.imgur.com/JKv7W1A.jpg" alt="Face 1" class="morph-face active">
+                <img src="https://i.imgur.com/5XwW3bB.jpg" alt="Face 2" class="morph-face">
+                <img src="https://i.imgur.com/8YQ9Z9y.jpg" alt="Face 3" class="morph-face">
+                <img src="https://i.imgur.com/2LQvU9G.jpg" alt="Face 4" class="morph-face">
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="section-header">
+            <h2>By the Numbers</h2>
+            <p>The alarming rise of deepfake technology and its impact on digital identity</p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="stat1">0</div>
+                <div class="stat-label">Deepfake videos online in 2023</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="stat2">0%</div>
+                <div class="stat-label">Are non-consensual pornography</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="stat3">0x</div>
+                <div class="stat-label">Growth since 2019</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="stat4">0%</div>
+                <div class="stat-label">Can fool detection tools</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Deepfake Challenge Section -->
+    <section class="challenge-section">
+        <div class="section-header">
+            <h2>Can You Spot the Deepfake?</h2>
+            <p>Test your ability to distinguish real from synthetic media</p>
+        </div>
+        <div class="challenge-content">
+            <div class="challenge-container">
+                <div class="challenge-slider">
+                    <div class="slider-line"></div>
+                    <img src="https://i.imgur.com/JKv7W1A.jpg" alt="Real Image" class="slider-image real-image">
+                    <img src="https://i.imgur.com/5XwW3bB.jpg" alt="Fake Image" class="slider-image fake-image">
+                    <div class="slider-handle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="challenge-instructions">Drag the slider to compare the images</div>
+            <div class="challenge-result">This is a deepfake! Look for subtle facial distortions.</div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <a href="#" class="footer-logo">DEEPFAKECRISIS</a>
+            <div class="footer-links">
+                <a href="#">Research</a>
+                <a href="#">Examples</a>
+                <a href="#">Solutions</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </div>
+            <p class="copyright">© 2023 Deepfake Crisis Project. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Face morphing animation
+        const faces = document.querySelectorAll('.morph-face');
+        let currentFace = 0;
+
+        function changeFace() {
+            faces[currentFace].classList.remove('active');
+            currentFace = (currentFace + 1) % faces.length;
+            faces[currentFace].classList.add('active');
+        }
+
+        setInterval(changeFace, 3000);
+
+        // Animated statistics
+        const statValues = [500000, 96, 900, 45];
+        const statElements = [
+            document.getElementById('stat1'),
+            document.getElementById('stat2'),
+            document.getElementById('stat3'),
+            document.getElementById('stat4')
+        ];
+
+        function animateStats() {
+            statElements.forEach((el, index) => {
+                let start = 0;
+                const end = statValues[index];
+                const duration = 2000;
+                const increment = end / (duration / 16);
+                
+                const timer = setInterval(() => {
+                    start += increment;
+                    if (start >= end) {
+                        clearInterval(timer);
+                        start = end;
+                    }
+                    
+                    if (index === 1 || index === 3) {
+                        el.textContent = Math.floor(start) + '%';
+                    } else if (index === 2) {
+                        el.textContent = Math.floor(start) + 'x';
+                    } else {
+                        el.textContent = Math.floor(start).toLocaleString();
+                    }
+                }, 16);
+            });
+        }
+
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.classList.contains('stats-grid')) {
+                        animateStats();
+                    }
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.stats-grid, .challenge-section').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Slider functionality
+        const sliderHandle = document.querySelector('.slider-handle');
+        const sliderContainer = document.querySelector('.challenge-slider');
+        const realImage = document.querySelector('.real-image');
+        const resultText = document.querySelector('.challenge-result');
+        let isDragging = false;
+
+        function updateSliderPosition(clientX) {
+            const containerRect = sliderContainer.getBoundingClientRect();
+            let position = (clientX - containerRect.left) / containerRect.width;
+            
+            // Constrain position between 0 and 1
+            position = Math.max(0, Math.min(1, position));
+            
+            // Update slider handle position
+            sliderHandle.style.left = `${position * 100}%`;
+            
+            // Clip the real image to show the fake image underneath
+            realImage.style.clipPath = `polygon(0 0, ${position * 100}% 0, ${position * 100}% 100%, 0 100%)`;
+            
+            // Show result when slider is in middle
+            if (Math.abs(position - 0.5) < 0.02) {
+                resultText.classList.add('show');
+            } else {
+                resultText.classList.remove('show');
+            }
+        }
+
+        sliderHandle.addEventListener('mousedown', () => {
+            isDragging = true;
+            sliderHandle.style.cursor = 'grabbing';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                updateSliderPosition(e.clientX);
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            sliderHandle.style.cursor = 'grab';
+        });
+
+        // Touch support for slider
+        sliderHandle.addEventListener('touchstart', () => {
+            isDragging = true;
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                updateSliderPosition(e.touches[0].clientX);
+            }
+        });
+
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        });
+    </script>
+</body>
+</html>
